@@ -3,14 +3,14 @@ title: "Netflix enunciado práctica Netflix MD 20_21. GIN2"
 author: "Grupo y nombre de cada usuario"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  word_document:
-    toc: yes
-  pdf_document:
-    toc: yes
-    number_sections: yes
   html_document:
     toc: yes
     number_sections: yes
+  pdf_document:
+    toc: yes
+    number_sections: yes
+  word_document:
+    toc: yes
 linkcolor: red
 header-includes: \renewcommand{\contentsname}{Contenidos}
 citecolor: blue
