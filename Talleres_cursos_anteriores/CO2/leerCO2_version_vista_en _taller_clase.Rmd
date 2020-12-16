@@ -1,0 +1,209 @@
+---
+title: "Emisiones de CO2 en el mundo."
+output: 
+  ioslides_presentation: 
+    css: Mery_style.css
+    keep_md: no
+    logo: Images/matriz_mov.gif
+    widescreen: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,cache=TRUE)
+library(tidyverse)
+```
+
+
+# title: "Emisiones de CO2 en el mundo."
+
+## Datos CO2
+
+
+El siguiente enlace [WorldBankCO2](https://mkt.tableau.com/Public/Datasets/World_Bank_CO2.xlsx)
+nos da acceso a un conocido data set  de [THE WORLD BANK](https://datacatalog.worldbank.org/). En concreto  la versión de este data set es la de de [Tableau Open Data Sets](https://www.tableau.com/learn/articles/free-public-data-sets) una colección de datos del programa [Tableau](https://public.tableau.com/en-us/s/gallery) que es un programa para  representar gráficas, paneles de control o [_dahsboards_](https://en.wikipedia.org/wiki/Dashboard_(business)) y los llamados [KPIs](https://en.wikipedia.org/wiki/Dashboard_(business)). 
+
+En esta actividad se trata en primer lugar que entendáis  los datos del fichero y que lo leáis de forma directa desde el archivo .xlsx y transforméis en tibbles o data frames de R.
+
+El fichero excel consta de 9 hojas  y podemos explorarlo y leerlo con varios paquetes de R. Uno de estos es `readr`
+
+Por ejemplo el siguiente código nos da los nombres de las sheets del fichero
+
+```{r}
+library(readxl)
+filename="World_Bank_CO2.xlsx"
+sheets_names <- readxl::excel_sheets(filename)
+sheets_names
+```
+
+Ahora podemos leer cada hoja
+
+```{r}
+read_excel_allsheets <- function(filename) {
+    sheets_names <- readxl::excel_sheets(filename)
+    x <- lapply(sheets_names, function(X) readxl::read_excel(filename, sheet = X))
+    names(x) <- sheets_names
+    return(x)
+    }
+```
+
+
+El siguiente código lee todas las sheets del excel y pone cada una en una lista de objetos llamada all_data_CO2. Cada objeto se llama con el nombre de la hoja
+
+```{r}
+all_data_CO2=read_excel_allsheets(filename)
+class(all_data_CO2)
+
+lapply(all_data_CO2,FUN=function(x) c(class=paste(class(x),collapse=", "),col_names=paste(names(x),collapse=", ")))
+  
+```
+
+
+
+
+
+
+
+## Contexto mundial en emisiones de contaminantes
+
+Os pongo algunos enlaces. A partir de estos buscad más.
+
+
+* [Protocolo de kioto (wikipedia)](https://es.wikipedia.org/wiki/Protocolo_de_Kioto)
+* [Cambio Climático .org](http://www.cambioclimatico.org/tema/protocolo-de-kyoto)
+* [Acuerdo de París](https://es.wikipedia.org/wiki/Acuerdo_de_Par%C3%ADs)
+* [Acuerdo de París Comisón Europea](https://ec.europa.eu/clima/policies/international/negotiations/paris_es)
+
+
+
+
+## Un gráfico
+
+```{r}
+all_data_CO2$`CO2 (kt) Pivoted`%>% group_by(`Year`,`Region`) %>% summarise(Total_Region=sum(`CO2 (kt)`,na.rm=TRUE)) %>% ggplot(aes(x = Year, y = `Total_Region`)) +   geom_line(aes(color = `Region`), size = 1)
+```
+
+
+## Conversiones desde los raw data y ajuste de metadatos
+ 
+ Primero por unas cuestiones de comodidad modificarermos los nombres de las tibbles y de las variables de cada tibble para no necesitar ponerlos
+ entre ``.
+
+```{r}
+data_CO2=all_data_CO2
+names(data_CO2)
+long_names=names(data_CO2)# los guardo para el jefe
+long_names
+arreglo_names=function(x) return(gsub("_$","",gsub("(__+)","_",gsub("\\(|\\)|\\-|\\s","_",names(x)))))
+names(data_CO2)=arreglo_names(data_CO2)
+names(data_CO2)
+
+for(sheet in 1:length(data_CO2)) {
+names(data_CO2[[sheet]])=arreglo_names(data_CO2[[sheet]])
+}
+
+
+print(data_CO2$CO2_kt_RAW_DATA,n=20,width = Inf)
+
+```
+
+
+```{r}
+glimpse(data_CO2$CO2_kt_RAW_DATA) # es similar en algunos caso a str pero es mas adecuado para tibbles complejas
+#str(all_data_CO2$`CO2_(kt)_RAW_DATA`)
+
+library(naniar)# cargar para la función replace_with_na. El paquete naniar aporta utilizades para tartar NA
+# ver un manual en https://cran.r-project.org/web/packages/naniar/vignettes/getting-started-w-naniar.html
+data_CO2$CO2_kt_RAW_DATA %>% gather(`1960`:`2015`, key="Year", value="CO2") %>%
+  naniar::replace_with_na(replace =list(CO2 ="null")) %>%
+  mutate(Year=as.integer(Year),CO2=as.numeric(CO2)) %>%
+  arrange(Country_Code) -> aux
+# nota cambiar gather (función retirada) por pivot_longer EJERCICIO
+
+print(aux,n=10,width=Inf)
+```
+
+
+
+```{r}
+periodos=table(data_CO2$CO2_kt_Pivoted$Year)
+periodos
+all(periodos==214)# hay alguno el primero 1960 que parece que falta algo 
+year_country=table(data_CO2$CO2_kt_Pivoted$Year,data_CO2$CO2_kt_Pivoted$Country_Code)
+#year_country # es muy grande mejor contemos las frecuencias de apariciones
+table(year_country)
+str(year_country)
+indice=which(year_country==0,arr.ind = TRUE)
+indice
+dimnames(year_country)[[1]][indice[1]]
+dimnames(year_country)[[2]][indice[2]]
+```
+
+```{r}
+data_CO2$CO2_kt_Pivoted[data_CO2$CO2_kt_Pivoted$Country_Code=="SMR",]# mejor usar filter
+```
+
+
+
+```{r}
+inner_join(aux,data_CO2$CO2_kt_Pivoted) %>% mutate(dif=CO2-CO2_kt) -> aux2
+summary(aux2$dif)# los errores pueden ser debidos al redondeo al convertir as.numeric(CO2)
+boxplot(aux2$dif)
+print(aux2,whihd=Inf)
+```
+
+
+
+
+```{r}
+data_clean=aux2 %>% inner_join(data_CO2$CO2_Per_Capita_Pivoted) %>% inner_join(data_CO2$Metadata_Countries)
+```
+### Preguntas y gráficos
+
+```{r}
+glimpse(data_clean)
+```
+
+
+```{r}
+data_clean %>% group_by(Year,Region) %>% summarise(Total_Region=sum(CO2_kt,na.rm=TRUE)) %>% ggplot(aes(x = Year, y = Total_Region)) +   geom_line(aes(color = Region), size = 1)
+```
+
+
+
+
+
+
+```{r}
+
+data_clean %>% ggplot(aes(Region,CO2,colour=Year)) + geom_boxplot() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_jitter(width = 0.2) 
+
+data_clean %>% ggplot(aes(IncomeGroup,CO2_Per_Capita_metric_tons,colour=Year)) + geom_boxplot() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_jitter(width = 0.2) 
+
+```
+
+
+```{r}
+data_clean %>% ggplot(aes(Year,CO2_Per_Capita_metric_tons,colour=Region)) + geom_point(aes(size=CO2) ) + geom_smooth()
+```
+
+
+Intento de mapamundi
+
+```
+library(map_data)
+WorldData <- map_data('world')
+#df <-data.frame(region=c('Hungary','Lithuania','Argentina'),value=c(4,10,11))
+color= data_clean %>% group_by(Country_Name) %>% summarise(media=mean(CO2,na.rm=TRUE))
+Mydata_plot <- inner_join(WorldData , color,by=c("region"="Country_Name"))
+Mydata_plot %>% ggplot() +
+  geom_polygon(data=Mydata_plot, aes(x=long, y=lat, group = group,fill=media),colour="black") +
+  scale_fill_continuous(low = "thistle2", high = "darkred", guide="colorbar") +
+  theme_bw() +
+  labs(fill = "legend" ,title = "Title", x="", y="") +
+  scale_y_continuous(breaks=c()) +
+  scale_x_continuous(breaks=c()) +
+  theme(panel.border =  element_blank())+coord_fixed(1)
+```
+
+
+
