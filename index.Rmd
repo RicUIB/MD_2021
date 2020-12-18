@@ -1,0 +1,18 @@
+---
+title: "Minería de Datos"
+author: "RicUIB"
+date: "18/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# Calendario de la práctica
+
+# Enunciado
+
+# Taller sobre la práctica
