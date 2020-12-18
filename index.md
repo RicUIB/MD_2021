@@ -15,5 +15,5 @@ output:
 
 # Enunciado
 
-# Taller sobre la práctica. Carga de datos.
+# Taller sobre la práctica. Carga de datos. 
 

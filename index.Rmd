@@ -17,5 +17,5 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Enunciado
 
-# Taller sobre la práctica. Carga de datos.
+# Taller sobre la práctica. Carga de datos. 
 
