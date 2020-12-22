@@ -39,7 +39,7 @@ Podéis (tenéis) que  utilizar las ayudas del taller de estos datos.
 * Hay que entregar el Rmd/notebook junto con su salida en  html/pdf
 * Máxima longitud: 10 páginas en pdf.
 * Hay que cuidar la presentación, ortografía y redacción.
-* Fecha entrega 23 de diciembre.
+* Fecha entrega 20 de enero a las 23:55 2021.
 
 ## Cuestión 1:  Contexto del problema y modelo de datos  (50%)
 
