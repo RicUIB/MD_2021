@@ -1,16 +1,16 @@
 ---
 title: "Instrucciones y calendario evaluación práctica y proyecto final. NETFLIX"
 output:
-  word_document: 
+  html_document: 
     toc: yes
+    number_sections: yes
     toc_depth: 4
   pdf_document: 
     toc: yes
     number_sections: yes
     toc_depth: 4
-  html_document: 
+  word_document: 
     toc: yes
-    number_sections: yes
     toc_depth: 4
 linkcolor: red
 header-includes: \renewcommand{\contentsname}{Contenidos}

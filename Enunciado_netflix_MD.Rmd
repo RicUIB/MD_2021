@@ -34,7 +34,7 @@ Podéis (tenéis) que  utilizar las ayudas del taller de estos datos.
 
 ## Instrucciones
 
-* Entregad en grupos de 2 ó 3 estudiantes.
+* Entregad en grupos de 4 ó 5 estudiantes.
 * Se puede hacer con R o python.
 * Hay que entregar el Rmd/notebook junto con su salida en  html/pdf
 * Máxima longitud: 10 páginas en pdf para cada apartado.
@@ -71,7 +71,7 @@ table(filas_ID_combined_all$file_num)
 ```
 
 
-1. Selecciona de las 1 a 17750 250  películas Semilla de grupo concatenar los dos últimos dígitos numéricos de vuestro DNI o tarjeta de residente 
+<span style="color: red;"> *ATENCIÓN* </span>Selecciona de las 1 a 17750 250  películas Semilla de grupo concatenar los dos últimos dígitos numéricos de vuestro DNI o tarjeta de residente 
 
 ```{r}
 # dos últimos dígitos 51 52 53 de cada miembro ordenados de menor a mayor 515253
