@@ -37,7 +37,7 @@ Podéis (tenéis) que  utilizar las ayudas del taller de estos datos.
 * Entregad en grupos de 2 ó 3 estudiantes.
 * Se puede hacer con R o python.
 * Hay que entregar el Rmd/notebook junto con su salida en  html/pdf
-* Máxima longitud: 10 páginas en pdf.
+* Máxima longitud: 10 páginas en pdf para cada apartado.
 * Hay que cuidar la presentación, ortografía y redacción.
 * Fecha entrega 20 de enero a las 23:55 2021.
 
