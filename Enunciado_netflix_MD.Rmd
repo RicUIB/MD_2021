@@ -1,16 +1,16 @@
 ---
-title: "Netflix enunciado práctica Netflix MD 20_21. GIN2"
+title: "Netflix enunciado práctica  MD 20_21. GIN2"
 author: "Grupo y nombre de cada usuario"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  html_document:
+  word_document:
     toc: yes
-    number_sections: yes
   pdf_document:
     toc: yes
     number_sections: yes
-  word_document:
+  html_document:
     toc: yes
+    number_sections: yes
 linkcolor: red
 header-includes: \renewcommand{\contentsname}{Contenidos}
 citecolor: blue
