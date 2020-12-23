@@ -13,11 +13,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-# Calendario de la práctica
+* Calendario de la práctica
 
-# Enunciado
+* [Enunciado](github.com/ricuib/MD_2021/Enunciado_netflix_MD.Rmd)
 
-# Taller sobre la práctica. Carga de datos. 
+* [Taller sobre la práctica. Carga de datos](github.com/ricuib/MD_2021/).
 
-# Enlaces
+
+
+* [Enlaces](https://ricuib.github.io/Enlaces)
 

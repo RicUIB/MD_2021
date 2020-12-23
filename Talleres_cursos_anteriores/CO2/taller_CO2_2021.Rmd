@@ -1,0 +1,102 @@
+---
+title: "Emisiones de CO2 en el mundo."
+author: ''
+output:
+  word_document: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(tidyverse)
+library(naniar)
+```
+# Taller CO2
+
+## Taller 1  datos CO2
+
+Con los datos del  CO2
+
+### Pregunta 1 Data wranling
+
+Reducir el código lo más posible y actualizar la función `gather`  para obtener la tabla pivotada que contenga el código de país, el nombre del país el año el CO2 brutos el CO2 per cápita y los metadatos de los países en una `tibble` construid a partir de las dos hojas de raw data y de la hoja de metadatos.
+
+
+```{r}
+PerCapita <- read_excel("World_Bank_CO2.xlsx",sheet = "CO2 Per Capita RAW DATA")
+KT <- read_excel("World_Bank_CO2.xlsx",sheet = "CO2 (kt) RAW DATA")
+Metadatos <- read_excel("World_Bank_CO2.xlsx",sheet = "Metadata - Countries")
+PerCapita=as_tibble(PerCapita)
+KT=as_tibble(KT)
+Metadatos=as_tibble(Metadatos)
+PerCapita=PerCapita %>% select(!c("Indicator Name","Indicator Code")) %>% 
+  pivot_longer(`1960`:`2015`, names_to="Year",values_to="CO2") %>%
+  naniar::replace_with_na(replace =list(CO2 ="null")) %>%
+  mutate(Year=as.integer(Year),CO2=as.numeric(CO2))
+KT=KT %>% select(!c("Indicator Name","Indicator Code")) %>% 
+  pivot_longer(`1960`:`2015`, names_to="Year",values_to="CO2") %>% 
+  naniar::replace_with_na(replace =list(CO2 ="null")) %>%mutate(Year=as.integer(Year),
+                                                                CO2=as.numeric(CO2))
+Tot=left_join(PerCapita,KT,by=c("Country Name","Country Code","Year"))%>% 
+  rename(CO2PC=CO2.x,CO2=CO2.y) 
+names(Tot)=gsub(" ","_",names(Tot))
+names(Metadatos)=gsub(" ","_",names(Metadatos))
+Metadatos=Metadatos%>% rename(Country_Name = TableName)
+DataClean=inner_join(Tot,Metadatos,by=c("Country_Name","Country_Code"))
+glimpse(DataClean)
+```
+
+
+### Pregunta 2 Dibujos del mapa del mundo
+
+Dibujad un mapa del mundo coloreando por país las distintas variables y por años o décadas.
+
+Hemos comprovado y sustituido los paises que tienen nombres distintos en las tablas *WorldData* y *DataClean*, de forma que si aparezcan en los mapas.
+
+```{r}
+DataClean$Country_Name=plyr::mapvalues(DataClean$Country_Name,from=c("Congo, Rep.",
+"Bahamas, The","United Kingdom","Egypt, Arab Rep.","Russian Federation","United States",
+"Virgin Islands (U.S.)","Yemen, Rep.","Syrian Arab Republic","Slovak Republic",
+"Macedonia, FYR","Korea, Rep.","Venezuela, RB"),
+to=c("Democratic Republic of the Congo","Bahamas","UK","Egypt","Russia","USA","Virgin Islands",
+"Yemen","Syria","Slovakia","Macedonia","South Korea","Venezuela"))
+
+
+WorldData <- map_data('world')
+
+DataClean=DataClean%>% mutate(Decada=floor((Year-1960)/10))
+
+  DataClean ->auxCO2
+  color = auxCO2 %>% group_by(Country_Name,Decada) %>% summarise(media=mean(CO2,na.rm=TRUE))
+  Mydata_plot <- inner_join(WorldData , color,by=c("region"="Country_Name"))
+ for (i in (0:5)) {
+   print(Mydata_plot %>% filter(Decada==i) %>% ggplot() +
+  geom_polygon(aes(x=long, y=lat, group = group,fill=media),colour="black") +
+  scale_fill_continuous(low = "thistle2", high = "darkred", guide="colorbar") +
+  theme_bw() +
+  labs(fill = "legend" ,title = paste(i*10+1960,"s",sep = ""), x="", y="") +
+  scale_y_continuous(breaks=c()) +
+  scale_x_continuous(breaks=c()) +
+  theme(panel.border =  element_blank())+coord_fixed(1))
+ }
+```
+
+```{r}
+DataClean ->auxCO2PC
+  color = auxCO2PC %>% group_by(Country_Name,Decada) %>% summarise(media=mean(CO2PC,na.rm=TRUE))
+  Mydata_plot <- inner_join(WorldData , color,by=c("region"="Country_Name"))
+  for (i in (0:5)) {
+   print(Mydata_plot %>% filter(Decada==i) %>% ggplot() +
+  geom_polygon(aes(x=long, y=lat, group = group,fill=media),colour="black") +
+  scale_fill_continuous(low = "thistle2", high = "darkred", guide="colorbar") +
+  theme_bw() +
+  labs(fill = "legend" ,title = paste(paste(i*10+1960,"s",sep = ""),"per Capita"), x="", y="") +
+  scale_y_continuous(breaks=c()) +
+  scale_x_continuous(breaks=c()) +
+  theme(panel.border =  element_blank())+coord_fixed(1))
+ }
+```
+

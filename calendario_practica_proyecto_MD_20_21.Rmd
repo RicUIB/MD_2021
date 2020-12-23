@@ -1,5 +1,5 @@
 ---
-title: "Calendario evaluación práctica y proyecto final. NETFLIX"
+title: "Instrucciones y calendario evaluación práctica y proyecto final. NETFLIX"
 output:
   html_document: 
     toc: yes
@@ -27,25 +27,25 @@ knitr::opts_chunk$set(echo = TRUE)
 El proyecto y práctica final vale el 30% de la nota.
 
 Las presentaciones y documentos pueden ser en catalán, castellano o inglés ( cuenta lo mismo). Se tiene que cuidar la presentación los gráficos y la redacción.
-
+ 
 ##  Partes 
 
 
-La práctica/proyecto se hace en grupos de 4 (unos 8 grupos en total) tenéis que resolver la práctica sobre datos de NETFLIX de la quue ya disponéis del enunciado..
+La práctica/proyecto se entrega en grupos de 4 o 5 (unos 8 grupos en total) tenéis que resolver la práctica sobre datos de NETFLIX de la que ya disponéis del enunciado..
 
-La practica costa de dos cuestiones  y una presentación oral
+La práctica costa de dos cuestiones  y una presentación oral
 
 ### **Cuestión 1  Contexto del problema y modelo de datos 10%**.
 
-Son 5 preguntas Se puntua sobre 10 y vale el 10% de la nota final de la asignatura. Fecha límite de entrega día 20 de enero a las 23:55 en la actividad de moodle. UN SOLO documento para esta cuestión y la siguiente.
+Son 5 preguntas Se puntúa sobre 10 y vale el 10% de la nota final de la asignatura. <span style="color: red;"> Fecha límite de entrega día 20 de enero a las 23:55 en la actividad de moodle práctica </span>. UN SOLO documento (en Rmd y en pdf) para esta cuestión y la siguiente.
 
 ### **Cuestión 2  Análisis exploratorio (EDA) 10%**. 
 
-Son 9 preguntas. Se puntua sobre 10 y vale el 10% de la nota final de la asignatura. Fecha límite de entrega  día 20 de enero a las 23:55 en la misma  actividad de campus extens anterior. UN SOLO documento para esta cuestión y la amterior.
+Son 9 preguntas. Se puntúa sobre 10 y vale el 10% de la nota final de la asignatura. <span style="color: red;"> Fecha límite de entrega día 20 de enero a las 23:55 en la actividad de moodle práctica </span>. UN SOLO documento (en Rmd y en pdf) para esta cuestión y la anterior.
 
 ### **Presentación oral 15 minutos 10%**
 
-Hay que hacer una presentación dividida en 4 partes (una por miembro) que luego se sortean (todos saben todas). Se puntúa la presentación el trabajo ya se puntuó. Hay que añadir una conclusión final. con sugerencia para el tratamiento de estos datos. Se puntua sobre 10 y vale el 10% de la nota final de la asignatura. Se hará el día del examen  de enero en principio el 29 de enero de 2021 a las 9:30.
+Hay que hacer una presentación  oral dividida en tantas  partes con miembros del grupo que luego se sortean a la hora de exponer (todos saben todas). Se puntúa la presentación; el trabajo ya se puntuó. Hay que añadir una conclusión final al trabajo realizado, con  alguna sugerencia para posibles aplicaciones futuras  de técnicas de minería de datos  este **dataset**. Se puntúa sobre 10 y vale el 10% de la nota final de la asignatura. <span style="color: red;">La presentación se realizará el día del examen  de enero (en principio) el 29 de enero de 2021 a las 9:00</span>.
 
 
 
