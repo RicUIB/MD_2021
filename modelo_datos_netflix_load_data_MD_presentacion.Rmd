@@ -391,12 +391,11 @@ ggscatter(sol_mds, x = "Dim1", y = "Dim2",
 
 [https://rmarkdown.rstudio.com/flexdashboard/](https://rmarkdown.rstudio.com/flexdashboard/)
 
-https://www.google.com/search?q=eso+es+todo+amigo+dibujo&sxsrf=ALeKk02e30qosW1VPJsrldhRrvEAgsOJFg:1610460881200&tbm=isch&source=iu&ictx=1&fir=R5ngO-hkb1UhkM%252Cq1mk21zQSPsaqM%252C_&vet=1&usg=AI4_-kQQn67Iw7XONK10NQNOEcJfRLU83g&sa=X&ved=2ahUKEwiciv6lypbuAhWLh1wKHT9oBpIQ9QF6BAgKEAE#imgrc=R5ngO-hkb1UhkM
-
+![FIN](imagenes/todo_amigos.jpeg)
 
 ```{r}
 
-knitr::include_graphics("https://www.google.com/search?q=eso+es+todo+amigo+dibujo&sxsrf=ALeKk02e30qosW1VPJsrldhRrvEAgsOJFg:1610460881200&tbm=isch&source=iu&ictx=1&fir=R5ngO-hkb1UhkM%252Cq1mk21zQSPsaqM%252C_&vet=1&usg=AI4_-kQQn67Iw7XONK10NQNOEcJfRLU83g&sa=X&ved=2ahUKEwiciv6lypbuAhWLh1wKHT9oBpIQ9QF6BAgKEAE#imgrc=R5ngO-hkb1UhkM") 
+knitr::include_graphics("imagenes/todo_amigos.jpeg") 
 ```
 
 
