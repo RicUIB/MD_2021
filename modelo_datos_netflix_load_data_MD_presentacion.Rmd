@@ -2,7 +2,10 @@
 title: "PRESENTACION: Ejemplo taller datos Netflix"
 author: "Ricardo"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: ioslides_presentation
+output: 
+  ioslides_presentation: 
+    smaller: yes
+    widescreen: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -243,8 +246,11 @@ pares=tibble(xy=t(combn(unique(netflix$ID_film),m=2))) %>% transmute(x=as.numeri
 
 clusterCall(cl, function() library(tidyverse))
 clusterExport(cl,list("sim_cos_netflix","Sim_cos_matrix2","netflix","pares"))
+```
 
+## Cálculo de la similitud coseno en paralelo
 
+```{r largo_script_2, size="tiny"}
 # Lanzo la computación en paralelo
 t1=Sys.time()
 time_sim_parallel <- system.time(
@@ -274,7 +280,9 @@ time_sim
 ```
 
 
-# Algunos ejemplos  con esta similitud: clusterin jerrarquico, mds y kmeans.
+#Algunos ejemplos  con esta similitud
+
+## Clusterin jerrarquico, mds y kmeans.
 
 Veremos sólo el código de algunos algoritmos básicos para clasificar las películas  a partir de la similitud coseno. Tenemos que transformar
 la similitud a disimilitud o distancia  , haciendo por ejemplo (hay otras maneras)
@@ -289,13 +297,13 @@ hclust(as.dist(1-Sim_cos_matrix2),method = "ward")-> h
 plot(h,hang = -1)
 ```
 
-
+## Clustering jerarquico
 
 ```{r}
 h_d=as.dendrogram(h)
 plot(h_d)
 ```
-
+## Clustering jerarquico
 ```{r}
 cluster_3=cutree(h,k = 3)
 cluster_3
@@ -334,9 +342,10 @@ table(cluster_3,sol_kmeans$cluster)
 
 
 
+## Clasificación por kmeans a partir de corrdenadas del MDS
 
 
-```{r}
+```{r largo_mds, size="tiny"}
 clust <- sol_kmeans$cluster %>% 
   as.factor()
 sol_mds<- as_tibble(sol_mds) %>%
@@ -357,9 +366,11 @@ ggscatter(sol_mds, x = "Dim1", y = "Dim2",
           repel = TRUE,
           title="Gráfico clusters kmeans \n sobre el mds de dos dimensiones"
           )
+```
 
+## Clasificación por kmeans a partir de corrdenadas del MDS
 
-
+```{r largo_mds2, size="tiny"}
 # Dibujo y coloreo por grupos clustering jerárquico ward
 ggscatter(sol_mds, x = "Dim1", y = "Dim2", 
           label = 1:nrow(sol_mds),
@@ -372,5 +383,22 @@ ggscatter(sol_mds, x = "Dim1", y = "Dim2",
           title="Gráfico de los  clusters jerárquico ward\n sobre el mds de dos dimensiones"
           )
 ```
+
+# Preguntas
+
+## Preguntas
+
+
+[https://rmarkdown.rstudio.com/flexdashboard/](https://rmarkdown.rstudio.com/flexdashboard/)
+
+https://www.google.com/search?q=eso+es+todo+amigo+dibujo&sxsrf=ALeKk02e30qosW1VPJsrldhRrvEAgsOJFg:1610460881200&tbm=isch&source=iu&ictx=1&fir=R5ngO-hkb1UhkM%252Cq1mk21zQSPsaqM%252C_&vet=1&usg=AI4_-kQQn67Iw7XONK10NQNOEcJfRLU83g&sa=X&ved=2ahUKEwiciv6lypbuAhWLh1wKHT9oBpIQ9QF6BAgKEAE#imgrc=R5ngO-hkb1UhkM
+
+
+```{r}
+
+knitr::include_graphics("https://www.google.com/search?q=eso+es+todo+amigo+dibujo&sxsrf=ALeKk02e30qosW1VPJsrldhRrvEAgsOJFg:1610460881200&tbm=isch&source=iu&ictx=1&fir=R5ngO-hkb1UhkM%252Cq1mk21zQSPsaqM%252C_&vet=1&usg=AI4_-kQQn67Iw7XONK10NQNOEcJfRLU83g&sa=X&ved=2ahUKEwiciv6lypbuAhWLh1wKHT9oBpIQ9QF6BAgKEAE#imgrc=R5ngO-hkb1UhkM") 
+```
+
+
 
 
