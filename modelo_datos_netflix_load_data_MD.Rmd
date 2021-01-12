@@ -261,7 +261,7 @@ time_sim
 ```
 
 
-# Algunos ejemplos  con esta similitud: clusterin jerrarquico. mds y kmeans.
+# Algunos ejemplos  con esta similitud: clusterin jerrarquico, mds y kmeans.
 
 Veremos sólo el código de algunos algoritmos básicos para clasificar las películas  a partir de la similitud coseno. Tenemos que transformar
 la similitud a disimilitud o distancia  , haciendo por ejemplo (hay otras maneras)
@@ -342,7 +342,7 @@ ggscatter(sol_mds, x = "Dim1", y = "Dim2",
           ellipse = TRUE,
           ellipse.type = "convex",
           repel = TRUE,
-          title="Gráfico clusters kmeans \n sobre dos el mds de dos dimensiones"
+          title="Gráfico clusters kmeans \n sobre el mds de dos dimensiones"
           )
 
 
@@ -356,7 +356,7 @@ ggscatter(sol_mds, x = "Dim1", y = "Dim2",
           ellipse = TRUE,
           ellipse.type = "convex",
           repel = TRUE,
-          title="Gráfico clusters jerárquico ward\n sobre el mds de dos dimensiones"
+          title="Gráfico de los  clusters jerárquico ward\n sobre el mds de dos dimensiones"
           )
 ```
 
