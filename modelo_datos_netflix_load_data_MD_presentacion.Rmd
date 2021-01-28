@@ -1,0 +1,403 @@
+---
+title: "PRESENTACION: Ejemplo taller datos Netflix"
+author: "Ricardo"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  ioslides_presentation: 
+    smaller: yes
+    widescreen: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,cache=TRUE)
+#library(tidyverse)
+```
+
+
+# Datos netflix
+
+
+## Carga de datos
+
+
+Enlace  a estos datos  de [Netflix](https://www.kaggle.com/netflix-inc/netflix-prize-data)
+Generad  un proyecto nuevo. Bajad lo datos de netflix a un carpeta/directorio que se llame `netflix`  y dentro de `netflix` crear una carpeta/directorio que se llame `model_netflix`
+
+## Carga de datos
+
+Sabemos que en  `combined_data_1.txt` hay 2342 películas y tiene 12095343. Cada película está separada por un entero por ejemplo  `1:`  es decir un entero seguido de `:`.
+
+Si queremos leer una cuántas películas tenemos que leer   sólo algunas lineas . Por ejemplo para leer las 100 primeras películas tenemos que leer las lineas hasta en encontrar la película 101 es decir `352872` lineas.
+
+## Carga de datos
+
+Película Núm.  |  ID_película | fila
+---------------|--------------|---------
+   1           |    1:        |        1
+ 101           |  101:        |   352872
+ 201           |  201:        |   934086
+ 301           |  301:        |  1454270
+ 501           |  501:        |  2799205
+1001           | 1001:        |  5011200
+2001           | 2001:        | 10319270
+
+
+
+
+## Carga de datos
+
+```{r}
+#Cargamos la librería tidyverse... mejor cargarlo oculto en el setup
+library(tidyverse)
+#Cargamos los datos de combined_data_1.txt netflix
+n_max=352872-1 # leo las primeras 100 películas 
+#n_max=5011200-1 # leo las primeras 1000 películas 
+#n_max=Inf# leo todas
+#Con este límite cargamos hasta la película que hace 1000 del 
+##combined_data_1.txt, para cargar todas poned n_max_1=Inf
+netflix=read_tsv("data/combined_data_1.txt",n_max = n_max,col_names = FALSE)
+dim(netflix) 
+# si n_max=Inf hemos cargado 24058263    lineas unos 24 millones
+# los cuatro ficheros combined tienen en total unos 100 millones de líneas
+head(netflix)
+```
+
+## Carga de datos
+
+files | number of rows
+------|-------------
+1     |   24058263
+2     |   26982302 
+3     |   22605786
+4     |   26851926
+------|------------
+Total | 100498277
+
+
+## Carga de datos
+
+Arreglamos los datos....
+
+
+
+```{r}
+netflix=netflix%>% mutate(fila=row_number())
+filas=grep(":",netflix$X1)
+#save(filas,file="data/filas_1.Robj")
+filas_ID= netflix %>%
+  filter( fila %in% filas ) %>%
+  mutate(ID=as.integer(gsub(":","",X1)))
+#IDs=unique(filas_ID$X1)
+reps=diff(c(filas_ID$fila,max(netflix$fila)+1))
+```
+
+## Carga de datos
+
+
+```{r}
+netflix=netflix %>%
+  mutate(ID1=rep(filas_ID$X1,times=reps)) %>%
+  filter(!(fila %in% filas)) %>%
+  select(-fila) %>%
+  separate(X1,into=c("ID_user","Score","data"),sep=",") %>%
+  mutate(Score=as.integer(Score)) %>%
+  separate(col = ID1,into=c("ID_film","borrar")) %>%
+  select(-borrar) %>% mutate(ID_film=as.numeric(ID_film))
+```
+
+## Carga de datos
+Recapitulamos. Hemos leído los perfiles de 100 películas
+
+```{r}
+glimpse(netflix)
+class(netflix)
+ncol(netflix)
+nrow(netflix)
+```
+
+
+## Carga de datos
+
+Respecto a los usuarios que han visto alguna de las películas tenemos
+
+
+```{r}
+length(unique(netflix$ID_user))
+```
+
+
+# Algunos estadísticos  y gráficos básicos
+
+## Algunos estadísticos  y gráficos básicos
+
+```{r}
+table(netflix$ID_user)-> count_users
+table(netflix$ID_film) -> count_films
+#knitr::kable(sort(count_users))
+#knitr::kable(sort( count_films))
+```
+
+## Algunos estadísticos  y gráficos básicos
+
+```{r}
+plot(sort(table(count_users)))
+plot(sort(table(count_films)))
+````
+
+
+```{r}
+#Tabla demasiado larga para mostrar
+#knitr::kable(sort(table(table(netflix$ID_user)))) 
+#knitr::kable(sort(table(table(netflix$ID_film))))
+```
+
+# Similaridades entre películas
+
+
+
+## Similitud coseno entre películas 
+
+Veremos el cálculo de  similaridades entre cada par de películas según los sus vectores de `score`. Lo haremos de dos maneras de forma secuencial y  de forma paralela.
+
+La similitud coseno de dos  vectores  de $\mathbb{R}^n$ no nulos $A=(A_1,A_2,\ldots,A_n)$ y $B=(B_1,B_2,\ldots,B_n)$
+
+
+$$sim_{\cos}(A,B)=cos(A,B)=\frac{\sum_{i=1}^n A_i\cdot B_i}{\sqrt{\sum_{i=1}^n A_i^2\cdot \sum_{i=1}^n B_i^2}}$$
+
+## ## Similitud coseno entre películas 
+
+
+```{r}
+sim_cos_netflix=function(xy,data=netflix){ 
+  x=xy[1]
+  y=xy[2]
+  x1=filter(data,ID_film==x)
+  y1=filter(data,ID_film==y)
+  xy=inner_join(x1,y1,by="ID_user")
+  sim= sum(xy$Score.x*xy$Score.y)/sqrt(sum(x1$Score^2)*sum(y1$Score^2))
+  sim
+}
+```
+
+
+
+## Similitud coseno entre películas 
+
+
+```{r}
+sim_cos_netflix(c(1,2),netflix)
+sim_cos_netflix(c(2,1),netflix)
+sim_cos_netflix(c(1,1),netflix)
+```
+
+
+## Similitud coseno entre películas 
+
+
+```{r}
+aux=t(combn(unique(netflix$ID_film),m=2))
+sim=tibble(x=aux[,1],y=aux[,2])
+
+time_sim <- system.time(sim$sim <- as.numeric(apply(sim,1,sim_cos_netflix)))
+time_sim
+```
+
+## Similitud coseno entre películas 
+
+
+
+```{r}
+#install.packages("reshape2")
+library(reshape2)# libreria que reformatea datos
+# añado la diagonal  a la  similitud  todas 1 
+diag_sim=tibble(x=1:100,y=1:100,sim=1)
+# construyo la matriz solo la parte triangular superior
+acast(rbind(sim,diag_sim), x~y, value.var = "sim")-> Sim_cos_matrix1
+# pongo los NA de la parte triangular inferior y diagonal a cero
+Sim_cos_matrix1[is.na(Sim_cos_matrix1)]=0
+Sim_cos_matrix1=Sim_cos_matrix1+t(Sim_cos_matrix1) # completo la matriz de similitud
+diag(Sim_cos_matrix1)=1
+```
+
+
+
+## Cálculo de la similitud coseno en paralelo
+
+
+
+```{r}
+Sim_cos_matrix2=matrix(0,ncol=100,nrow=100)
+```
+
+## Cálculo de la similitud coseno en paralelo
+
+```{r largo_script, size="tiny"}
+#install.packages(“parallel”) # libreria de pararelización
+library(parallel)
+# Detectamos el número de cores disponibles y creamos el cluster
+no_cores <- parallel::makeCluster(detectCores())
+no_cores
+length(no_cores)
+#str(no_cores)
+cl <- makeCluster(length(no_cores)-1)  
+
+
+pares=tibble(xy=t(combn(unique(netflix$ID_film),m=2))) %>% transmute(x=as.numeric(xy[,1]),y=as.numeric(xy[,2]))
+
+clusterCall(cl, function() library(tidyverse))
+clusterExport(cl,list("sim_cos_netflix","Sim_cos_matrix2","netflix","pares"))
+```
+
+## Cálculo de la similitud coseno en paralelo
+
+```{r largo_script_2, size="tiny"}
+# Lanzo la computación en paralelo
+t1=Sys.time()
+time_sim_parallel <- system.time(
+results<-parApply(cl,
+                  pares,1,
+                  FUN=function(x) {c(as.integer(x[1]),as.integer(x[2]),
+                                     sim_cos_netflix(x,data=netflix))})
+)
+
+#apply(results,2,FUN=function(x) {x[3]->>Sim_cos_matrix2[x[1],x[2]]})
+# o, en este caso, con un for como hacemos a continuación
+for(i in 1:dim(results)[2]){
+  x=results[,i]
+  x[3]->Sim_cos_matrix2[x[1],x[2]]
+}
+# arreglo la triangular inferior 
+Sim_cos_matrix2=Sim_cos_matrix2+t(Sim_cos_matrix2)
+diag(Sim_cos_matrix2)=1#arreglo la diagonal
+all(Sim_cos_matrix2==Sim_cos_matrix1)
+t2=Sys.time()
+t2-t1
+time_sim_parallel 
+# para el cluster
+parallel::stopCluster(cl)
+time_sim_parallel
+time_sim
+```
+
+
+#Algunos ejemplos  con esta similitud
+
+## Clusterin jerrarquico, mds y kmeans.
+
+Veremos sólo el código de algunos algoritmos básicos para clasificar las películas  a partir de la similitud coseno. Tenemos que transformar
+la similitud a disimilitud o distancia  , haciendo por ejemplo (hay otras maneras)
+
+$$dist_{\cos}(A,B)=1-sim_{cos}(A,B).$$
+
+## Clustering jerarquico
+
+```{r}
+hclust(as.dist(1-Sim_cos_matrix2),method = "ward")-> h
+
+plot(h,hang = -1)
+```
+
+## Clustering jerarquico
+
+```{r}
+h_d=as.dendrogram(h)
+plot(h_d)
+```
+## Clustering jerarquico
+```{r}
+cluster_3=cutree(h,k = 3)
+cluster_3
+table(cluster_3)
+```
+
+
+
+## MDS
+
+
+```{r}
+sol_mds=cmdscale(as.dist(1-Sim_cos_matrix2),  k=2)
+
+plot(sol_mds[,1:2],col=c("blue","red","green"),
+     xlab="Dimensión 1",ylab="Dimensión 2",
+     main="Cluster jerárquico por ward\n cortado a tres clusters",
+     pch=19)
+legend("bottomright",legend=c(paste0("cluster",1:3)),
+       col=c("blue","red","green"),cex=0.6,pch=19)
+
+```
+
+
+
+## Clasificación por kmeans a partir de corrdenadas del MDS
+
+```{r}
+sol_kmeans=kmeans(as.dist(1-Sim_cos_matrix2),3)
+sol_kmeans$cluster
+# numero de películas por cluster
+table(sol_kmeans$cluster)
+# matriz de confusión cluster jerárquico versus cluster de kmeans
+table(cluster_3,sol_kmeans$cluster)
+```
+
+
+
+## Clasificación por kmeans a partir de corrdenadas del MDS
+
+
+```{r largo_mds, size="tiny"}
+clust <- sol_kmeans$cluster %>% 
+  as.factor()
+sol_mds<- as_tibble(sol_mds) %>%
+  mutate(groups_mds = clust,
+         groups_h=as.factor(cluster_3)) %>%
+  dplyr::rename(Dim1=V1,Dim2=V2)
+
+library(ggpubr)
+
+# Dibujo y coloreo por grupos KMEANS
+ggscatter(sol_mds, x = "Dim1", y = "Dim2", 
+          label = 1:nrow(sol_mds),
+          color = "groups_mds",
+          palette = "jco",
+          size = 1, 
+          ellipse = TRUE,
+          ellipse.type = "convex",
+          repel = TRUE,
+          title="Gráfico clusters kmeans \n sobre el mds de dos dimensiones"
+          )
+```
+
+## Clasificación por kmeans a partir de corrdenadas del MDS
+
+```{r largo_mds2, size="tiny"}
+# Dibujo y coloreo por grupos clustering jerárquico ward
+ggscatter(sol_mds, x = "Dim1", y = "Dim2", 
+          label = 1:nrow(sol_mds),
+          color = "groups_h",
+          palette = "jco",
+          size = 1, 
+          ellipse = TRUE,
+          ellipse.type = "convex",
+          repel = TRUE,
+          title="Gráfico de los  clusters jerárquico ward\n sobre el mds de dos dimensiones"
+          )
+```
+
+# Preguntas
+
+## Preguntas
+
+
+[https://rmarkdown.rstudio.com/flexdashboard/](https://rmarkdown.rstudio.com/flexdashboard/)
+
+![FIN](imagenes/todo_amigos.jpeg)
+
+```{r}
+
+knitr::include_graphics("imagenes/todo_amigos.jpeg") 
+```
+
+
+
+
