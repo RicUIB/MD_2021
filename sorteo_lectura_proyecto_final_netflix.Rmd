@@ -1,0 +1,72 @@
+---
+title: "Presentación proyecto NETFLIX"
+author: "2020-2021"
+date: "28/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Presentación proyecto NETFLIX
+
+
+
+## Sorteo 
+
+
+
+Cuatro rondas 
+
+* Ronda 1 hora  9:00-9:45
+* Ronda 2 hora 9:45-10:30     	 
+* Descanso hora 10:30 a 10:45    	
+* Ronda 3 hora 10:45 a 11:30   	
+* Ronda 4 hora 11:30 a 12:15 
+
+
+
+
+1. **Orden exposición JAJA: Ronda 1  9:00-9:45** 
+     1. Jaume Aloy Vich
+     2. Antoni Bennàsar Martorell
+     3. Javier Martín Romero
+     4. Andreu Serra Sastre
+2. **Orden exposición  CJA 	Ronda 1  9:00-9:45**
+     1. Asier Miguel Alemany Ortiz
+     2. Joan Dot Sastre
+     3. Carlos Pesquera Quesada  
+3. **Orden exposición   FJBJ 	Ronda 2  9:45-10:30**  
+    1. Juan José Canals Crehuet
+    1. Bartolome Sancho Valls
+    1. Jaume Sanso Febrer
+    1. Francisco Talavera Pérez 
+4. **Orden exposición    IMLJJ  Ronda 2  9:45-10:30**  
+    1. Iván Álvarez Ramos
+    1. Miguel Ángel García Vich
+    1. Lluís Miralles García
+    1. Josep Sebastià Sánchez Cano
+    1. Juan Jose Torres Roser 
+Descanso | 10:30 a 10:45 
+5. **Orden exposición  AVLF Ronda 3  10:45 a 11:30**
+    1. Vicenç Bosch Matas
+    1. Aarón Delgado Ripoll
+    1. Frances Xavier Gaya Morey
+    1. Leandro Vera Farr
+6.  **Orden exposición     SDJB  Ronda 3  10:45 a 11:30**
+    1. David Cantero Tirado     
+    1. Sergio García Puertas     
+    1. Juan Jorquera Riera     
+    1. Bartomeu Ramis Tarragó
+7.  **Orden exposición     SJAA   	Ronda 4  11:30 a 12:15**
+    1. Juan Carlos Boo Crugeiras  
+    1. Nadal Llabrés Belmar   
+    1. Andreu López Cortés  
+    1. Sebastià Vicens Oliver 
+8.  **Orden exposición     TAGJ    	Ronda 4  11:30 a 12:15**
+    1. Tomás Bordoy García-Carpintero 
+    1. Alejandro Cortés Fernández
+    1. Gian Lucas Martín| Chamorro 
+    1. Jordi Antoni Sastre Moll 
